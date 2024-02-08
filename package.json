@@ -10,8 +10,22 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "^4.18.2",
+    "mongoose": "^8.1.1",
     "morgan": "~1.9.1",
-    "node-html-parser": "^6.1.12",
-    "node-fetch": "*"
-  }
+    "node-fetch": "*",
+    "node-html-parser": "^6.1.12"
+  },
+  "description": "https://webpreview.onrender.com/",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/info441-wi24/websharer-angsoenW.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/info441-wi24/websharer-angsoenW/issues"
+  },
+  "homepage": "https://github.com/info441-wi24/websharer-angsoenW#readme"
 }
