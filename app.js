@@ -12,7 +12,7 @@ const authConfig = {
         clientId: "8017b637-f037-4234-8f28-14c47c565744",
         authority: "https://login.microsoftonline.com/f6b6dd5b-f02f-441a-99a0-162ac5060bd2",
         clientSecret: "A5Z8Q~VMcbCSEeCn~mmj8GViGCHFRqQO2CZpEb_v",
-        redirectUri: "redirect", //note: you can explicitly make this "localhost:3000/redirect" or "examplesite.me/redirect"
+        redirectUri: "/redirect", //note: you can explicitly make this "localhost:3000/redirect" or "examplesite.me/redirect"
     },
     system: {
         loggerOptions: {
@@ -35,6 +35,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 var app = express();
+app.enable('trust proxy');
 
 app.use(logger('dev'));
 app.use(express.json());
