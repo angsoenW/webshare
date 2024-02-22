@@ -13,12 +13,23 @@ async function main(){
         url: String,
         description: String,
         username: String,
+        likes: [String],
         rating: Number,
         created_date: String
-    })
+    });
 
-    models.Post = mongoose.model('webs', postSchema)
-    console.log('mongoose models created')
+    models.Post = mongoose.model('webs', postSchema);
+
+    const commentSchema = new mongoose.Schema({
+        username: String,
+        comment: String,
+        post: {type: mongoose.Schema.Types.ObjectId, ref: "webs"},
+        created_date: String
+    });
+
+    models.Comment = mongoose.model("Comment", commentSchema);
+
+    console.log('mongoose models created');
 }
 
 export default models;

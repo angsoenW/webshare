@@ -15,7 +15,8 @@
     "morgan": "~1.9.1",
     "msal-node-wrapper": "https://gitpkg.now.sh/kylethayer/ms-identity-javascript-nodejs-tutorial-msal-node-v2-/Common/msal-node-wrapper?main",
     "node-fetch": "*",
-    "node-html-parser": "^6.1.12"
+    "node-html-parser": "^6.1.12",
+    "serve-favicon": "^2.5.0"
   },
   "description": "https://webpreview.onrender.com/",
   "main": "app.js",

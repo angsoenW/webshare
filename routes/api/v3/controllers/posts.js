@@ -4,6 +4,45 @@ var router = express.Router();
 
 import getURLPreview from '../utils/urlPreviews.js';
 
+router.get('/', async function (req, res, next) {
+    try {
+        let allPosts;
+
+        if (req.query.username) {
+            allPosts = await req.models.Post.find({ username: req.query.username });
+        } else {
+            allPosts = await req.models.Post.find();
+        }
+
+        let postData = await Promise.all(allPosts.map(async post => {
+            try {
+                // const htmlPreview = await getURLPreview(post.url, post.rating);
+                const htmlPreview = await getURLPreview(post.url);
+
+                return {
+                    id: post._id,
+                    description: "Description: " + post.description,
+                    htmlPreview: htmlPreview,
+                    likes: post.likes,
+                    username: post.username, 
+                    created_date: post.created_date
+                };
+            } catch (error) {
+                return {
+                    description: post.description,
+                    htmlPreview: `Error generating preview: ${error.message}`
+                };
+            }
+        }));
+
+        res.json(postData);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: 'error', error: error.toString() }); // Send back error status and message
+    }
+});
+
 router.post('/', async function (req, res, next) {
     try {
         if (req.session.isAuthenticated) {
@@ -40,39 +79,84 @@ router.post('/', async function (req, res, next) {
     }
 });
 
-router.get('/', async function (req, res, next) {
-    try {
-        let allPosts;
+router.post("/like", async(req, res) => {
+    try{
+        if (!req.session.isAuthenticated) {
+            return res.status(401).json({
+                status: "error",
+                error: "not logged in"
+            });
+        }
+        let postId = req.body.postID;
+        let post = await req.models.Post.findById(postId);
 
-        if (req.query.username) {
-            allPosts = await req.models.Post.find({ username: req.query.username });
-        } else {
-            allPosts = await req.models.Post.find();
+        if (!post.likes.includes(req.session.account.username)) {
+            post.likes.push(req.session.account.username);
+            await post.save();
         }
 
-        let postData = await Promise.all(allPosts.map(async post => {
-            try {
-                // const htmlPreview = await getURLPreview(post.url, post.rating);
-                const htmlPreview = await getURLPreview(post.url);
+        res.json({status: "success"});
+        
+    } catch(err) {
+        console.log("error: ", err)
+        res.status(500).json({status: "error"})
+    }
+});
 
-                return {
-                    description: "Description: " + post.description,
-                    htmlPreview: htmlPreview,
-                    username: post.username
-                };
-            } catch (error) {
-                return {
-                    description: post.description,
-                    htmlPreview: `Error generating preview: ${error.message}`
-                };
-            }
-        }));
+router.post("/unlike", async(req, res) => {
+    try{
+        if (!req.session.isAuthenticated) {
+            return res.status(401).json({
+                status: "error",
+                error: "not logged in"
+            });
+        }
+        let postId = req.body.postID;
+        let post = await req.models.Post.findById(postId);
 
-        res.json(postData);
+        let index = post.likes.indexOf(req.session.account.username);
+        if (index > -1) {
+            post.likes.splice(index, 1);
+            await post.save();
+        }
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ status: 'error', error: error.toString() }); // Send back error status and message
+        res.json({status: "success"});
+        
+    } catch(err) {
+        console.log("error: ", err)
+        res.status(500).json({status: "error"})
+    }
+});
+
+router.delete("/", async(req, res) => {
+    try{
+        if (!req.session.isAuthenticated) {
+            return res.status(401).json({
+                status: "error",
+                error: "not logged in"
+            });
+        }
+
+        let postId = req.body.postID;
+        let post = await req.models.Post.findById(postId);
+
+        console.log(post);
+
+        if (post.username !== req.session.account.username) {
+            return res.status(401).json({
+                status: 'error',
+                error: "you can only delete your own posts"
+            });
+        }
+
+        await req.models.Comment.deleteMany({post: postId});
+        await req.models.Post.deleteOne({_id: postId});
+
+        res.json({status: "success"});
+        
+    } catch(err) {
+        console.log("error: ", err)
+        res.status(500).json({status: "error"})
     }
 });
 

@@ -5,6 +5,7 @@ import logger from 'morgan';
 import parser from 'node-html-parser';
 import fetch from 'node-fetch';
 import sessions from 'express-session'
+import favicon from 'serve-favicon';
 import WebAppAuthProvider from 'msal-node-wrapper'
 
 const authConfig = {
@@ -58,6 +59,8 @@ app.use((req, res, next) => {
     req.models = models;
     next();
 });
+
+app.use(favicon(path.join(__dirname, 'public', 'img', 'favicon.ico')));
 
 app.use('/api/v3', apiV3Router);
 
