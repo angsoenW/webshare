@@ -29,6 +29,17 @@ async function main(){
 
     models.Comment = mongoose.model("Comment", commentSchema);
 
+    const userSchema = new mongoose.Schema({
+        username: String,
+        city: String,
+        job: String,
+        bio: String,
+        following: [String],
+        follower: [String]
+    });
+
+    models.User = mongoose.model("User", userSchema);
+
     console.log('mongoose models created');
 }
 
