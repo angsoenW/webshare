@@ -3,10 +3,40 @@ async function init(){
     loadUserInfo();
 }
 
-async function saveUserInfo(){
-    //TODO: do an ajax call to save whatever info you want about the user from the user table
-    //see postComment() in the index.js file as an example of how to do this
+async function updateUserInfo(){
+    let city = document.getElementById('city').value;
+    let job = document.getElementById('job').value;
+    let bio = document.getElementById('bio').value;
+
+    let responseJson = await fetchJSON(`api/${apiVersion}/userpage?user=${encodeURIComponent(myIdentity)}`, {
+        method: "POST",
+        body: {city: city, job: job, bio: bio}
+    });
+
+    if(responseJson) {
+        loadUserInfo();
+    } else {
+        alert("Failed to save user info. Please try again.");
+    }
 }
+
+async function addFriend() {
+    let followedUserId = document.getElementById('friend_email').value;
+    if (!followedUserId) {
+        document.getElementById('searchResult').innerHTML = '<div class="alert alert-warning" role="alert">No user found!</div>';
+        return;
+    }
+    let responseJson = await fetchJSON(`api/${apiVersion}/userpage?user=${encodeURIComponent(myIdentity)}`, {
+        method: "POST",
+        body: {followed: followedUserId}
+    });
+    if(responseJson) {
+        document.getElementById('searchResult').innerHTML = responseJson.message
+        loadUserInfo();
+    }
+
+}
+
 
 async function loadUserInfo(){
     const urlParams = new URLSearchParams(window.location.search);
@@ -20,8 +50,31 @@ async function loadUserInfo(){
         document.getElementById("user_info_new_div").classList.add("d-none");
     }
     
-    //TODO: do an ajax call to load whatever info you want about the user from the user table
+    let responseJson = await fetchJSON(`api/${apiVersion}/userpage?user=${encodeURIComponent(username)}`, {
+        method: "GET",
+    });
 
+    console.log(responseJson)
+
+    if (responseJson && responseJson.length > 0) {
+        console.log(responseJson);
+        const user = responseJson[0];
+        const following = Array.isArray(user.following) ? user.following.join(', ') : 'None';
+        const follower = Array.isArray(user.follower) ? user.follower.join(', ') : 'None';
+        
+        let userInfoHTML = `
+            <p>Username: ${user.username}</p>
+            <p>City: ${user.city}</p>
+            <p>Job: ${user.job}</p>
+            <p>Bio: ${user.bio}</p>
+            <p>Following: ${following}</p>
+            <p>Follower: ${follower}</p>
+        `;
+        document.getElementById("user_info_div").innerHTML = userInfoHTML;
+    } else {
+        document.getElementById("user_info_div").innerHTML = '<p>No user information found.</p>';
+    }
+    
     loadUserInfoPosts(username)
 }
 

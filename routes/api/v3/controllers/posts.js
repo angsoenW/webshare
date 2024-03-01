@@ -47,13 +47,9 @@ router.post('/', async function (req, res, next) {
     try {
         if (req.session.isAuthenticated) {
 
-            //const { url, description, rating } = req.body;
             const { url, description } = req.body;
             const username = req.session.account.username;
 
-            /* if (rating < 0 || rating > 10) {
-                return res.status(400).json({ "status": "error", "error": "Rating must be between 1 and 10" });
-            } */
 
             const newPost = new req.models.Post({
                 url,

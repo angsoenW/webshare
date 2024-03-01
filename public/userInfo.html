@@ -23,12 +23,24 @@
     TODO: For A7, show user info here (loadUserInfo function in userInfo.js)
   </div>
   <br>
-  <div id="user_info_new_div" class="d-none">
+  <div id="user_info_new_div">
     <h3>Update User Info:</h3>
-    TODO: For A7, add input fields here here (saveUserInfo function in userInfo.js)
-    <br>
-    <button onclick="saveUserInfo()">Save User Info</button>
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city"><br>
+    <label for="job">Job:</label>
+    <input type="text" id="job" name="job"><br>
+    <label for="bio">Bio:</label>
+    <textarea id="bio" name="bio"></textarea><br>
+    <button onclick="updateUserInfo()">Save User Info</button>
+    <div id="add_friend_div">
+      <h3>Add a Friend:</h3>
+      <label for="friend_email">Friend's Email:</label>
+      <input type="email" id="friend_email" name="friend_email"><br>
+      <button onclick="addFriend()">Add Friend</button>
+      <div id="searchResult"></div>
+    </div>
   </div>
+  <br>
   <br><br>
   <h2>All Posts</h2>
   <button onclick="loadUserInfo()">refresh</button>

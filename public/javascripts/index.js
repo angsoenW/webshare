@@ -5,6 +5,7 @@ async function init(){
     urlInput.onclick = previewUrl;
 
     await loadIdentity();
+    createUser(myIdentity);
     loadPosts();
 }
 
@@ -171,4 +172,15 @@ async function postComment(postID){
     })
     
     refreshComments(postID);
+}
+
+function createUser(myIdentity){
+    let responseJson = fetchJSON(`api/${apiVersion}/userpage?user=${myIdentity}`, {
+        method: "POST",
+        body: {user: myIdentity}
+    });
+
+    if(!responseJson && !responseJson.success) {
+        alert("Failed to save user info. Please try again.");
+    }
 }
