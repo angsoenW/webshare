@@ -41,12 +41,12 @@ router.post('/', async function (req, res, next) {
             const username = req.query.user;
 
             if (identity !== username) {
-                return res.status(500).json({ "status": "error", "message": "No access  ." });
+                return res.status(500).json({ "status": "error", "message": "No access." });
             }
 
             if (req.body.user) {
                 let user = await req.models.User.find({username: username})
-                if (!user) {
+                if (JSON.stringify(user) === "[]") {
                     const newUser = new req.models.User({
                         username: req.body.user
                     })
